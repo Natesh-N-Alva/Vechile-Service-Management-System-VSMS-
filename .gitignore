@@ -1,0 +1,15 @@
+# Secrets & Environment
+.env
+.env.*
+!.env.example
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+
+# Next.js / Node
+static/node_modules/
+static/.next/
+static/out/
+.DS_Store

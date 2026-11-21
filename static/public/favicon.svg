@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="gradientFill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="200" height="200" fill="#0f172a" rx="40"/>
+  
+  <!-- Main Car Shape -->
+  <g filter="url(#glow)">
+    <!-- Car Body -->
+    <path d="M 50 120 L 60 80 L 90 75 L 110 75 L 140 80 L 150 120 Z" fill="url(#gradientFill)" stroke="#14b8a6" stroke-width="2"/>
+    
+    <!-- Windows -->
+    <rect x="65" y="85" width="25" height="18" fill="#0f172a" opacity="0.8" rx="3"/>
+    <rect x="105" y="85" width="25" height="18" fill="#0f172a" opacity="0.8" rx="3"/>
+    
+    <!-- Wheels -->
+    <circle cx="70" cy="135" r="12" fill="url(#gradientFill)" stroke="#14b8a6" stroke-width="2"/>
+    <circle cx="130" cy="135" r="12" fill="url(#gradientFill)" stroke="#14b8a6" stroke-width="2"/>
+    
+    <!-- Wheel Details -->
+    <circle cx="70" cy="135" r="7" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+    <circle cx="130" cy="135" r="7" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Flow Lines (arrows) -->
+  <g stroke="#06b6d4" stroke-width="2.5" fill="none" stroke-linecap="round">
+    <!-- Left arrow -->
+    <path d="M 30 100 Q 40 90 50 95" opacity="0.6"/>
+    <polygon points="35 85 30 95 38 92" fill="#06b6d4" opacity="0.6"/>
+    
+    <!-- Right arrow -->
+    <path d="M 170 100 Q 160 90 150 95" opacity="0.6"/>
+    <polygon points="165 85 170 95 162 92" fill="#06b6d4" opacity="0.6"/>
+  </g>
+</svg>
