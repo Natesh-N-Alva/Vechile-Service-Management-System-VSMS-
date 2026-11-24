@@ -19,7 +19,7 @@ export default function VehiclesPage() {
 
   const fetchVehicles = async () => {
     try {
-      const response = await fetchWithAuth('http://127.0.0.1:5000/api/vehicles');
+      const response = await fetchWithAuth('/api/vehicles');
       const data = await response.json();
       if (!data.error) {
         setVehicles(data);
