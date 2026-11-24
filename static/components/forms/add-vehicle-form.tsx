@@ -56,7 +56,7 @@ export function AddVehicleForm({ initialData, isEditing = false, onSuccess, onCa
 
     try {
       // Use PUT if editing, POST if adding new
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/vehicles', {
+      const res = await fetchWithAuth('/api/vehicles', {
         method: isEditing ? 'PUT' : 'POST',
         body: JSON.stringify(safePayload)
       });
