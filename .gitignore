@@ -13,3 +13,4 @@ static/node_modules/
 static/.next/
 static/out/
 .DS_Store
+.vscode/
