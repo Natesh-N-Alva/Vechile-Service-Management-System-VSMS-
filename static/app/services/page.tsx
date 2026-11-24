@@ -22,7 +22,7 @@ export default function ServicesPage() {
 
     const loadServices = async () => {
       try {
-        const response = await fetchWithAuth('http://127.0.0.1:5000/api/services');
+        const response = await fetchWithAuth('/api/services');
         const data = await response.json();
         
         if (!data.error && Array.isArray(data)) {
