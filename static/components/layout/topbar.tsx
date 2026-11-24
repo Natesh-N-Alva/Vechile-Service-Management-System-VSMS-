@@ -30,7 +30,7 @@ export function Topbar() {
       // Fetch dynamic alerts from Flask
       const loadNotifications = async () => {
         try {
-          const res = await fetchWithAuth('http://127.0.0.1:5000/api/notifications');
+          const res = await fetchWithAuth('/api/notifications');
           const data = await res.json();
           if (!data.error) setNotifications(data);
         } catch (err) {
