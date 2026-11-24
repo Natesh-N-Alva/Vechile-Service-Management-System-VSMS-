@@ -45,10 +45,18 @@ A full-stack web application designed to streamline vehicle maintenance tracking
 
 ---
 
-## Database Architecture
+## How the Database Works (TiDB Cloud Architecture)
 
-The relational schema consists of 6 normalized tables:
+Instead of requiring every developer to install and configure a local MySQL/MariaDB server, VSMS uses a centralized **TiDB Cloud Serverless** cluster (`VSMS_db`) over the public internet:
 
+* **MySQL 8.0 Wire-Compatibility:** TiDB speaks the standard MySQL protocol, allowing Flask to communicate using `mysql-connector-python` (`use_pure=True`) with standard relational SQL queries, joins, transactions, and foreign keys.
+* **Mandatory TLS/SSL Encryption:** Public connections to TiDB Cloud run over port **`4000`** with strict TLS certificate verification (`ssl_verify_cert=True`). The repository includes `isrgrootx1.pem` so Windows, macOS, and Linux machines can verify the server certificate out of the box (with automatic fallback to `/etc/ssl/certs/ca-certificates.crt` on Linux).
+* **Zero-Config Credential Loading:** `app.py` uses `python-dotenv` to read `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME` from a local `.env` file at runtime, keeping secrets completely out of source control.
+* **Shared vs. Individual Clusters:**
+  * *Connecting to the team cluster:* Ensure your current public IP address is whitelisted under **Cluster Settings > Network / IP Access List** in TiDB Cloud (or set to `0.0.0.0/0` during active development).
+  * *Running your own isolated instance:* Spin up a free **TiDB Cloud Starter** cluster, execute the schema SQL below in the TiDB SQL Editor, and paste your new credentials into `.env`.
+
+### Relational Schema (6 Normalized Tables)
 1. **`USERS`** — Stores user profiles, contact details, roles (`Admin` / `User`), and credentials.
 2. **`VEHICLE`** — Tracks registered vehicles linked to `USERS` (`User_ID`).
 3. **`SERVICE_RECORD`** — Logs completed maintenance visits, odometer readings, and total costs linked to `VEHICLE`.
@@ -58,49 +66,68 @@ The relational schema consists of 6 normalized tables:
 
 ---
 
-## API Reference
+## How to Run the Project Locally
 
-| Method | Endpoint | Access | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/signup` | Public | Register a new `User` account |
-| `POST` | `/api/login` | Public | Authenticate user and return JWT access token |
-| `GET` | `/api/notifications` | JWT | Fetch role-specific token alerts and 180-day service reminders |
-| `GET, POST, PUT, DELETE` | `/api/users` | Admin | Manage user accounts with cascading data cleanup |
-| `GET, POST, PUT, DELETE` | `/api/vehicles` | JWT / Admin | View own/all vehicles, add new vehicles, or update/delete records |
-| `GET, POST, PUT, DELETE` | `/api/services` | JWT / Admin | Retrieve service histories with itemized parts or log new services |
-| `GET, POST, PUT` | `/api/tokens` | JWT / Admin | Request service appointments or approve/reject tokens with time slots |
-| `GET` | `/api/analytics` | JWT | Fetch role-tailored financial, fleet, and part reliability metrics |
+### Prerequisites
+* **Python 3.10+** and `pip`
+* **Node.js 18+** and `npm`
+* **Git**
 
----
-
-## Project Structure
-
-```text
-vehicle_system/
-├── app.py                  # Flask REST API and database logic
-├── isrgrootx1.pem          # TLS root certificate for TiDB Cloud connection
-├── .env.example            # Environment variable template
-├── .gitignore              # Git ignore rules for secrets, venv, and build files
-├── static/                 # Next.js frontend application
-│   ├── src/ / app/         # Frontend pages, components, and dashboard views
-│   ├── package.json        # Node dependencies and scripts
-│   └── next.config.*       # Next.js configuration
-└── templates/              # Additional template assets
-```
-
----
-
-## Local Setup & Installation
-
-### 1. Clone the Repository
+### Step 1: Clone the Repository
 ```bash
 git clone [https://github.com/Natesh-N-Alva/](https://github.com/Natesh-N-Alva/)<your-repo-name>.git
 cd vehicle_system
 ```
 
-### 2. Database Setup (TiDB Cloud / MySQL)
-1. Create a free cluster on [TiDB Cloud](https://tidbcloud.com/) (or use any MySQL 8.0+ / MariaDB instance).
-2. Open the **SQL Editor** and run the schema initialization script:
+### Step 2: Set Up Environment Variables
+Copy `.env.example` to create your local `.env` file and fill in your TiDB Cloud credentials (ask the repo maintainer for the shared cluster `.env` values, or use your own TiDB cluster credentials):
+```bash
+cp .env.example .env
+```
+```env
+JWT_SECRET_KEY=your-super-secret-jwt-key
+DB_HOST=gateway01.ap-southeast-1.prod.aws.tidbcloud.com
+DB_PORT=4000
+DB_NAME=VSMS_db
+DB_USER=your-cluster-prefix.root
+DB_PASSWORD=your-cluster-password
+```
+
+### Step 3: Set Up & Run the Flask Backend
+1. Create and activate a Python virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate        # Linux / macOS
+   # venv\Scripts\activate         # Windows (Command Prompt / PowerShell)
+   ```
+2. Install all required Python dependencies from `requirements.txt`:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Start the Flask API server:
+   ```bash
+   python app.py
+   ```
+   The backend will start at **`http://127.0.0.1:5000`**.
+
+### Step 4: Set Up & Run the Next.js Frontend
+Open a **second terminal** in the project root, navigate to `static/`, install Node dependencies, and start the dev server:
+```bash
+cd static
+npm install
+npm run dev
+```
+The frontend will launch at **`http://localhost:3000`**.
+
+### Step 5: Log In & Test
+* Open **`http://localhost:3000/login`** in your browser.
+* Create a new user account via **`/signup`**, or sign in with your seeded Admin credentials to manage tokens, vehicles, and service logs.
+
+---
+
+## Database Schema Initialization (For Fresh Clusters)
+
+If you are setting up a brand-new TiDB Cloud or MySQL 8.0+ database from scratch, run this script in the **SQL Editor**:
 
 ```sql
 CREATE DATABASE IF NOT EXISTS VSMS_db;
@@ -193,37 +220,38 @@ INSERT INTO PARTS (Part_Name, Category, Standard_Life_KM) VALUES
 ('Brake Fluid', 'Fluid', 10000);
 ```
 
-### 3. Configure Environment Variables
-Copy `.env.example` to `.env` in the project root and populate your database credentials:
-```bash
-cp .env.example .env
-```
-```env
-JWT_SECRET_KEY=your-super-secret-jwt-key
-DB_HOST=your-cluster-host.prod.aws.tidbcloud.com
-DB_PORT=4000
-DB_NAME=VSMS_db
-DB_USER=your-cluster-user.root
-DB_PASSWORD=your-cluster-password
-```
+---
 
-### 4. Start the Flask Backend
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install flask flask-cors mysql-connector-python flask-jwt-extended python-dotenv
-python app.py
-```
-The API server will run at `http://127.0.0.1:5000`.
+## API Reference
 
-### 5. Start the Next.js Frontend
-In a separate terminal:
-```bash
-cd static
-npm install
-npm run dev
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/signup` | Public | Register a new `User` account |
+| `POST` | `/api/login` | Public | Authenticate user and return JWT access token |
+| `GET` | `/api/notifications` | JWT | Fetch role-specific token alerts and 180-day service reminders |
+| `GET, POST, PUT, DELETE` | `/api/users` | Admin | Manage user accounts with cascading data cleanup |
+| `GET, POST, PUT, DELETE` | `/api/vehicles` | JWT / Admin | View own/all vehicles, add new vehicles, or update/delete records |
+| `GET, POST, PUT, DELETE` | `/api/services` | JWT / Admin | Retrieve service histories with itemized parts or log new services |
+| `GET, POST, PUT` | `/api/tokens` | JWT / Admin | Request service appointments or approve/reject tokens with time slots |
+| `GET` | `/api/analytics` | JWT | Fetch role-tailored financial, fleet, and part reliability metrics |
+
+---
+
+## Project Structure
+
+```text
+vehicle_system/
+├── app.py                  # Flask REST API and TiDB Cloud connection logic
+├── requirements.txt        # Python backend dependencies
+├── isrgrootx1.pem          # TLS root certificate for TiDB Cloud verification
+├── .env.example            # Environment variable template
+├── .gitignore              # Git ignore rules for secrets, venv, and build files
+├── static/                 # Next.js frontend application
+│   ├── src/ / app/         # Frontend pages, components, and dashboard views
+│   ├── package.json        # Node dependencies and scripts
+│   └── next.config.*       # Next.js configuration
+└── templates/              # Additional template assets
 ```
-Open `http://localhost:3000` in your browser.
 
 ---
 
