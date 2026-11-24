@@ -27,7 +27,7 @@ export default function AnalyticsPage() {
 
     const fetchAnalytics = async () => {
       try {
-        const res = await fetchWithAuth('http://127.0.0.1:5000/api/analytics');
+        const res = await fetchWithAuth('/api/analytics');
         const data = await res.json();
         if (!data.error) setStats(data);
       } catch (err) {
