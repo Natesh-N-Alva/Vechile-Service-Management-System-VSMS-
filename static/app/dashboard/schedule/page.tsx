@@ -20,9 +20,9 @@ export default function UserSchedulePage() {
 
   const loadData = async () => {
     try {
-      const vRes = await fetchWithAuth('http://127.0.0.1:5000/api/vehicles');
+      const vRes = await fetchWithAuth('/api/vehicles');
       setVehicles(await vRes.json());
-      const tRes = await fetchWithAuth('http://127.0.0.1:5000/api/tokens');
+      const tRes = await fetchWithAuth('/api/tokens');
       setTokens(await tRes.json());
     } catch (err) { console.error("Failed to fetch data"); }
   };
@@ -35,7 +35,7 @@ export default function UserSchedulePage() {
     setError('');
 
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/tokens', {
+      const res = await fetchWithAuth('/api/tokens', {
         method: 'POST',
         body: JSON.stringify(formData)
       });
