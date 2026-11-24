@@ -17,7 +17,7 @@ export default function VehicleManagementSystem() {
     // Wrapped in useCallback so it can be safely used inside useEffect
     const fetchUsers = useCallback(async () => {
         try {
-            const response = await fetchWithAuth('http://127.0.0.1:5000/api/users');
+            const response = await fetchWithAuth('/api/users');
             const data = await response.json();
             if (!data.error) setUsers(data);
         } catch (error) {
@@ -53,7 +53,7 @@ export default function VehicleManagementSystem() {
         setMessage({ text: 'Submitting...', type: 'info' });
 
         try {
-            const response = await fetchWithAuth('http://127.0.0.1:5000/api/vehicles', {
+            const response = await fetchWithAuth('/api/vehicles', {
                 method: 'POST',
                 body: JSON.stringify(formData)
             });
