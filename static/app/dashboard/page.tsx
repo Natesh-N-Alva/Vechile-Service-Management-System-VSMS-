@@ -40,11 +40,11 @@ export default function DashboardPage() {
 
     const loadDashboardData = async () => {
       try {
-        const statsRes = await fetchWithAuth('http://127.0.0.1:5000/api/analytics');
+        const statsRes = await fetchWithAuth('/api/analytics');
         const statsData = await statsRes.json();
         if (!statsData.error) setStats(statsData);
 
-        const servicesRes = await fetchWithAuth('http://127.0.0.1:5000/api/services');
+        const servicesRes = await fetchWithAuth('/api/services');
         const servicesData = await servicesRes.json();
 
         if (!servicesData.error && Array.isArray(servicesData)) {
