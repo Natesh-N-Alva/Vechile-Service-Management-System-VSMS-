@@ -21,7 +21,7 @@ export default function AdminUsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/users');
+      const res = await fetchWithAuth('/api/users');
       const data = await res.json();
       if (!data.error) setUsers(data);
     } catch (err) {
@@ -40,7 +40,7 @@ export default function AdminUsersPage() {
     if (!confirm("Are you sure you want to delete this user? WARNING: This will permanently wipe all their vehicles, service history, and replaced parts from the database.")) return;
     
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/users', {
+      const res = await fetchWithAuth('/api/users', {
         method: 'DELETE',
         body: JSON.stringify({ User_ID: userId })
       });
@@ -92,7 +92,7 @@ export default function AdminUsersPage() {
     }
     
     const method = isEditing ? 'PUT' : 'POST';
-    const res = await fetchWithAuth('http://127.0.0.1:5000/api/users', {
+    const res = await fetchWithAuth('/api/users', {
       method: method, 
       body: JSON.stringify(formData)
     });
