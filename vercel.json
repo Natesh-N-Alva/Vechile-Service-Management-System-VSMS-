@@ -3,13 +3,11 @@
   "services": {
     "app": {
       "root": ".",
-      "framework": "flask",
-      "routePrefix": "/api"
+      "framework": "flask"
     },
     "static": {
       "root": "static",
-      "framework": "nextjs",
-      "routePrefix": "/"
+      "framework": "nextjs"
     }
   }
 }
