@@ -16,7 +16,7 @@ export default function AdminSchedulePage() {
 
   const fetchTokens = async () => {
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/tokens');
+      const res = await fetchWithAuth('/api/tokens');
       const data = await res.json();
       if (!data.error) setTokens(data);
     } catch (err) { console.error("Failed to fetch tokens"); }
@@ -26,7 +26,7 @@ export default function AdminSchedulePage() {
 
   const submitUpdate = async (tokenId: number, newStatus: string) => {
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/tokens', {
+      const res = await fetchWithAuth('/api/tokens', {
         method: 'PUT',
         body: JSON.stringify({ 
           Token_ID: tokenId, 
