@@ -21,7 +21,7 @@ export default function AdminVehiclesPage() {
 
   const fetchVehicles = async () => {
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/vehicles');
+      const res = await fetchWithAuth('/api/vehicles');
       const data = await res.json();
       if (!data.error) setVehicles(data);
     } catch (err) {
@@ -52,7 +52,7 @@ export default function AdminVehiclesPage() {
   const handleDelete = async (vehicleId: number) => {
     if (!confirm("Are you sure you want to delete this vehicle? This will also wipe its entire service history.")) return;
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/vehicles', {
+      const res = await fetchWithAuth('/api/vehicles', {
         method: 'DELETE', body: JSON.stringify({ Vehicle_ID: vehicleId })
       });
       if (res.ok) fetchVehicles(); 
