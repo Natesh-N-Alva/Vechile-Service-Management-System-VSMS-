@@ -33,9 +33,9 @@ export function AddServiceForm({ initialData, isEditing = false, onSuccess, onCa
   useEffect(() => {
     const loadData = async () => {
       try {
-        const vRes = await fetchWithAuth('http://127.0.0.1:5000/api/vehicles');
+        const vRes = await fetchWithAuth('/api/vehicles');
         setVehicles(await vRes.json());
-        const pRes = await fetchWithAuth('http://127.0.0.1:5000/api/parts');
+        const pRes = await fetchWithAuth('/api/parts');
         setCatalogParts(await pRes.json());
       } catch (err) { console.error("Fetch failed"); }
     };
@@ -64,7 +64,7 @@ export function AddServiceForm({ initialData, isEditing = false, onSuccess, onCa
     };
 
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/services', {
+      const res = await fetchWithAuth('/api/services', {
         method: isEditing ? 'PUT' : 'POST', 
         body: JSON.stringify(safePayload)
       });
