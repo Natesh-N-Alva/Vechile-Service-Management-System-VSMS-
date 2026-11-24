@@ -25,10 +25,10 @@ export default function ProfilePage() {
     // 2. Fetch live fleet summary from API
     const fetchStats = async () => {
       try {
-        const analyticsRes = await fetchWithAuth('http://127.0.0.1:5000/api/analytics');
+        const analyticsRes = await fetchWithAuth('/api/analytics');
         const analyticsData = await analyticsRes.json();
         
-        const servicesRes = await fetchWithAuth('http://127.0.0.1:5000/api/services');
+        const servicesRes = await fetchWithAuth('/api/services');
         const servicesData = await servicesRes.json();
 
         setStats({
