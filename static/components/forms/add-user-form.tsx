@@ -27,7 +27,7 @@ export function AddUserForm({ onSuccess, onCancel }: AddUserFormProps) {
     setError('');
 
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/users', {
+      const res = await fetchWithAuth('/api/users', {
         method: 'POST',
         body: JSON.stringify(formData)
       });
