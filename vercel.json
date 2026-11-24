@@ -1,23 +1,15 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "app.py",
-      "use": "@vercel/python"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "app": {
+      "root": ".",
+      "framework": "flask",
+      "routePrefix": "/api"
     },
-    {
-      "src": "static/package.json",
-      "use": "@vercel/next"
+    "static": {
+      "root": "static",
+      "framework": "nextjs",
+      "routePrefix": "/"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/app.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/static/$1"
-    }
-  ]
+  }
 }
