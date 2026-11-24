@@ -20,7 +20,7 @@ export default function AdminServicesPage() {
 
   const fetchServices = async () => {
     try {
-      const sRes = await fetchWithAuth('http://127.0.0.1:5000/api/services');
+      const sRes = await fetchWithAuth('/api/services');
       const data = await sRes.json();
       if (!data.error) {
         const sorted = Array.isArray(data) ? data.sort((a, b) => new Date(b.Service_Date).getTime() - new Date(a.Service_Date).getTime()) : [];
@@ -50,7 +50,7 @@ export default function AdminServicesPage() {
   const handleDelete = async (serviceId: number) => {
     if (!confirm("Delete this service record? This will also delete any associated replaced parts.")) return;
     try {
-      const res = await fetchWithAuth('http://127.0.0.1:5000/api/services', {
+      const res = await fetchWithAuth('/api/services', {
         method: 'DELETE', body: JSON.stringify({ Service_ID: serviceId })
       });
       if (res.ok) fetchServices(); 
